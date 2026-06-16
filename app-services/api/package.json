@@ -1,0 +1,16 @@
+{
+  "name": "lab-api",
+  "version": "1.0.0",
+  "description": "Lab API Service — ArgoCD + Octopus Deploy Lab",
+  "main": "src/index.js",
+  "scripts": {
+    "start":   "node src/index.js",
+    "dev":     "node src/index.js",
+    "test":    "node -e \"require('./src/index.js')\" & sleep 2 && curl -sf http://localhost:8080/health && echo 'Health check passed' && kill %1"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": ["lab", "api", "argocd"],
+  "license": "MIT"
+}

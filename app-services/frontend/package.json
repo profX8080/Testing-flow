@@ -1,0 +1,11 @@
+{
+  "name": "lab-frontend",
+  "version": "1.0.0",
+  "description": "Lab Frontend — ArgoCD + Octopus Deploy Lab",
+  "scripts": {
+    "test": "echo 'No tests yet - add your test framework here' && exit 0",
+    "lint": "echo 'No linter configured yet'"
+  },
+  "keywords": ["lab", "frontend", "argocd"],
+  "license": "MIT"
+}

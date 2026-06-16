@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lab Frontend</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 2rem; color: #38bdf8; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.1rem; color: #94a3b8; margin-bottom: 1rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      margin-bottom: 1.5rem;
+    }
+    .badge.green { background: #166534; color: #86efac; }
+    .status-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .status-item {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 1rem;
+      border: 1px solid #334155;
+    }
+    .status-item .label { font-size: 0.75rem; color: #64748b; margin-bottom: 0.25rem; }
+    .status-item .value { font-size: 1rem; font-weight: bold; color: #38bdf8; }
+    .status-item .value.ok { color: #86efac; }
+    .status-item .value.err { color: #f87171; }
+    #api-data {
+      background: #0f172a;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-top: 1rem;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #a3e635;
+      white-space: pre-wrap;
+      word-break: break-all;
+      min-height: 80px;
+    }
+    button {
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+    button:hover { background: #1d4ed8; }
+    .footer { color: #475569; font-size: 0.75rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Lab Frontend</h1>
+    <h2>ArgoCD + Octopus Deploy Lab</h2>
+    <span class="badge green">RUNNING ON EKS - kaniko4</span>
+
+    <div class="status-grid">
+      <div class="status-item">
+        <div class="label">Service</div>
+        <div class="value">frontend</div>
+      </div>
+      <div class="status-item">
+        <div class="label">Image</div>
+        <div class="value">nginx:alpine</div>
+      </div>
+      <div class="status-item">
+        <div class="label">Namespace</div>
+        <div class="value">lab</div>
+      </div>
+      <div class="status-item">
+        <div class="label">Cluster</div>
+        <div class="value">kaniko4</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>API Response</h2>
+    <p style="color:#94a3b8;font-size:0.85rem;">Click the button to call the API service running in the same cluster.</p>
+    <button onclick="callApi()">Call api-svc:8080</button>
+    <div id="api-data">Click the button above to fetch data from the API service...</div>
+  </div>
+
+  <div class="footer">
+    Nexustry Platform Engineering Lab &mdash; github.com/nexustry/app-services
+  </div>
+
+  <script>
+    async function callApi() {
+      const el = document.getElementById('api-data');
+      el.style.color = '#94a3b8';
+      el.textContent = 'Calling http://api-svc:8080 ...';
+      try {
+        // In the cluster, frontend calls api-svc directly via K8s DNS
+        // For local testing this will fail (no cluster DNS) - that is expected
+        const res  = await fetch('/api/data');
+        const data = await res.json();
+        el.style.color = '#a3e635';
+        el.textContent  = JSON.stringify(data, null, 2);
+      } catch (err) {
+        el.style.color = '#f87171';
+        el.textContent  = 'Error: ' + err.message + '\n\n(This is expected when running outside the cluster.\nInside EKS, frontend calls api-svc:8080 via Kubernetes DNS.)';
+      }
+    }
+  </script>
+
+</body>
+</html>
